@@ -3,7 +3,11 @@ import random
 from cvxopt import matrix, solvers
 
 def v_tensor(v_pi, transition, d_states, n_states, n_actions, pi):
-    return 0
+    v = np.zeros((n_states, n_actions-1 , d_states))
+    for i in n_states:
+        a = pi[i]
+        
+
 
 def generate_G_matrix(n_states, n_actions, d_states, v_vector, x_dim):
 
@@ -45,6 +49,9 @@ def generate_G_matrix(n_states, n_actions, d_states, v_vector, x_dim):
     return G, bottom_row
 
 def linear_irl(v_pi, transition, feature_mat, n_states, n_actions, pi):
+    
+    print(feature_mat.shape)
+    #feature matrix is of the shape (n_states * n_states) - d_states gets feature dimensionality of each state 
     d_states = feature_mat.shape[1]
     
     # helper tensor 
@@ -75,8 +82,8 @@ def linear_irl(v_pi, transition, feature_mat, n_states, n_actions, pi):
     G = matrix(G)
     h = matrix(h)
     A = matrix(A)
-    b = matrix(b)
+    b = matrix(B)
     results = solvers.lp(c, G, h, A, b)
-    alpha = np.asarray(results["x"][-D:], dtype=np.double)
+    alpha = np.asarray(results["x"][-d_states:], dtype=np.double)
     return np.dot(feature_mat, -alpha)
 

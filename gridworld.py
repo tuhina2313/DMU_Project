@@ -147,7 +147,8 @@ class Gridworld(object):
                     action = self.actions[rn.randint(0, 4)]
                 else:
                     #action comes from the policy (1-epsilon) number of times
-                    action = self.actions[policy(self.coord_to_state_index((sx, sy)))]
+                    a = policy[self.coord_to_state_index((sx, sy))]
+                    action = self.actions[a]
 
                 #check if the new state produced by taking that action is within the state space range, then move otherwise stay
                 if (0 <= sx + action[0] < self.size and
@@ -162,7 +163,7 @@ class Gridworld(object):
                 state_int = self.coord_to_state_index((sx, sy))
                 action_int = self.actions.index(action)
                 next_state_int = self.coord_to_state_index((next_sx, next_sy))
-                reward = self.reward(next_state_int)
+                reward = self.R(next_state_int)
                 trajectory.append((state_int, action_int, reward))
 
                 sx = next_sx
