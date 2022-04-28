@@ -2,6 +2,7 @@ import gridworld
 import ValueIteration
 #import linearProg_IRL
 import maxEntIRL
+#import deepIRL
 
 import sys
 import numpy as np
@@ -21,8 +22,8 @@ def test_for_traj(gw, n_episodes, traj_length, optimal_policy):
     return trajectories
 
 if __name__ == '__main__':
-    size = 3
-    n_episodes = 100
+    size = 5
+    n_episodes = 200
     epsilon = 0.3
     discount = 0.9
 
@@ -32,8 +33,8 @@ if __name__ == '__main__':
     print("Value function", v)
     print("Policy", optimal_policy)
 
-    traj_length = 3 * size
-    trajectories = test_for_traj(gw, n_episodes, traj_length, optimal_policy)
+    traj_length = 4 * size
+    trajectories = test_for_traj(gw, 200 , traj_length, optimal_policy)
 
     feature_mat = gw.feature_matrix()
     expert_reward = np.array([gw.R(s) for s in range(gw.n_states)])
@@ -48,6 +49,21 @@ if __name__ == '__main__':
     plt.colorbar()
     plt.title("Recovered reward")
     plt.show()
+
+    # structure = (3, 3)
+    # epochs = 50
+    # learning_rate = 0.01
+    # l1 = l2 = 0
+    # r = deepIRL.irl((feature_mat.shape[1],) + structure, feature_mat, gw.n_actions, discount, gw.transition_probability, trajectories, epochs, learning_rate, l1=l1, l2=l2)
+    # plt.subplot(1, 2, 1)
+    # plt.pcolor(expert_reward.reshape((size, size)))
+    # plt.colorbar()
+    # plt.title("Groundtruth reward")
+    # plt.subplot(1, 2, 2)
+    # plt.pcolor(r.reshape((size, size)))
+    # plt.colorbar()
+    # plt.title("Recovered reward")
+    # plt.show()
 
 
 

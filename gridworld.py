@@ -5,8 +5,8 @@ class Gridworld(object):
 
     def __init__(self, size, epsilon, discount):
         
-        #we discussed that we'll limit the actions to L,R,U,D 
-        #Sourav/Alexa - Should we can modify this to have diagonal moves as well? 
+        #we discussed that we'll limit the actions to R,U,L,D
+        #Sourav/Alexa - Should we modify this to have diagonal moves as well? 
         self.actions = ((1, 0), (0, 1), (-1, 0), (0, -1))
         self.n_actions = len(self.actions)
         self.n_states = size**2
@@ -99,8 +99,28 @@ class Gridworld(object):
                 return 0.0
     # Need to define multiple rewards for this grid, some closer smaller rewards and some farther higher rewards
     def R(self, state_int):
-        if state_int == self.n_states - 1:
-            return 1
+        # if state_int == 99: # Point: (9,9)
+        #     return 10.0
+        # if state_int == 13: # Point: (3,1)
+        #     return -2.0
+        # if state_int == 34: # Point: (4,3)
+        #     return -10.0
+        # if state_int == 23: # Point: (2,3)
+        #     return 1.0
+        # if state_int == 67: # Point: (7,6)
+        #     return -5.0
+        
+        if state_int == 24: # Point: (4,4)
+            return 10.0
+        if state_int == 7:
+            return -2.0
+        if state_int == 17:
+            return -2.0
+        if state_int == 11:
+            return 1.0
+        return 0.0
+
+
         return 0
 
     def average_reward(self, n_trajectories, trajectory_length, policy):
@@ -161,11 +181,13 @@ class Gridworld(object):
 
                 # elements that make up the tuple for recording trajectories
                 state_int = self.coord_to_state_index((sx, sy))
+
+                if state_int == self.n_states-1:
+                    break
                 action_int = self.actions.index(action)
                 next_state_int = self.coord_to_state_index((next_sx, next_sy))
                 reward = self.R(next_state_int)
                 trajectory.append((state_int, action_int, reward))
-
                 sx = next_sx
                 sy = next_sy
 

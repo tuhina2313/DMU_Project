@@ -8,32 +8,31 @@ def value_iteration(nstates, nactions, T, R, discount = 0.9):
 
 
     eps = 0.001
-    V = np.zeros(nactions)
-    Vmax = np.zeros(nstates)
-    oldV = [10000]*nstates
-    difference = float("inf")
-    optimal_policy = np.zeros(nstates, dtype = int)
+    V = np.zeros(nstates)
 
+    optimal_policy = np.zeros(nstates, dtype = int)
+    difference = float("inf")
+    best_action = 1
     while difference > eps:
         difference = 0
         for s_index in range(nstates):
             reward = R[s_index] #here i is the state index
-            
+            tsum = 0
+            q_max = float("-inf")
             for a_index in range(nactions):
-                tsum=0
-
-                for sp_index in range(nstates):
-                    tsum = tsum + T[s_index,a_index,sp_index] * Vmax[sp_index]
-                    
-                V[a_index] = reward+discount*tsum 
+                    transition_prob = T[s_index,a_index, :]
+                    tsum = max(tsum , np.dot(transition_prob, R + discount*V))
+                    if q_max < tsum:
+                        q_max = tsum
+                        best_action = a_index
             
-            new_difference = abs(Vmax[s_index] - max(V))
+            new_difference = abs(V[s_index] - tsum)
             if new_difference > difference:
                 difference = new_difference    
-            Vmax[s_index]=max(V)
-            optimal_policy[s_index] = np.argmax(V)
-        oldV = Vmax
-    return Vmax, optimal_policy
+            
+            V[s_index] = tsum
+            optimal_policy[s_index] = best_action
+    return V , optimal_policy
 
     #Questions: 
     #Do we have actions(m) and states(m)? Are these lists? 

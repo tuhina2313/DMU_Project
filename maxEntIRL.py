@@ -44,7 +44,7 @@ def calc_feature_expectations(feature_matrix, trajectories, n_states, d_states):
 
     for trajectory in trajectories:
         for state, _ , _ in trajectory:
-            feature_exp += feature_matrix[state]
+            feature_exp += feature_matrix[int(state)]
 
     feature_exp /= trajectories.shape[0]
 
@@ -53,13 +53,14 @@ def calc_feature_expectations(feature_matrix, trajectories, n_states, d_states):
 def state_visitations(n_states, r, n_actions, discount, transition_probability, trajectories):
 
     n_trajectories = trajectories.shape[0]
-    trajectory_length = trajectories.shape[1]
+    trajectory_length = n_trajectories * 3
 
     v, policy = ValueIteration.value_iteration(n_states, n_actions, transition_probability, r)
 
     start_s = np.zeros(n_states)
     for trajectory in trajectories:
-        start_s[trajectory[0, 0]] += 1
+        idx = trajectory[0][0]
+        start_s[int(idx)] += 1
     prob_start_s = start_s/n_trajectories
 
     state_visitation = np.tile(prob_start_s, (trajectory_length, 1)).T
