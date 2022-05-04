@@ -112,16 +112,17 @@ class Gridworld(object):
         
         if state_int == 24: # Point: (4,4)
             return 10.0
-        if state_int == 7:
+        if state_int == 16:
             return -2.0
-        if state_int == 17:
+        if state_int == 18:
             return -2.0
-        if state_int == 11:
+        if state_int == 6:
             return 1.0
         return 0.0
 
-
-        return 0
+        # if state_int == (self.size ** 2) - 1:
+        #     return 10
+        # return 0
 
     def average_reward(self, n_trajectories, trajectory_length, policy):
         trajectories = self.generate_trajectories(n_trajectories,
@@ -182,14 +183,15 @@ class Gridworld(object):
                 # elements that make up the tuple for recording trajectories
                 state_int = self.coord_to_state_index((sx, sy))
 
-                if state_int == self.n_states-1:
-                    break
                 action_int = self.actions.index(action)
                 next_state_int = self.coord_to_state_index((next_sx, next_sy))
                 reward = self.R(next_state_int)
                 trajectory.append((state_int, action_int, reward))
                 sx = next_sx
                 sy = next_sy
+
+                if state_int == self.n_states-1:
+                    break
 
             trajectories.append(trajectory)
 
